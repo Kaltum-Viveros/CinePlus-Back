@@ -1,0 +1,28 @@
+services:
+  db-peliculas:
+    image: postgres:16
+    container_name: db-peliculas
+    restart: always
+    environment:
+      POSTGRES_DB: peliculas_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - peliculas_data:/var/lib/postgresql/data
+
+  ms-peliculas:
+    build:
+      context: ./ms-peliculas
+    container_name: ms-peliculas
+    restart: always
+    depends_on:
+      - db-peliculas
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db-peliculas:5432/peliculas_db
+    ports:
+      - "8001:8000"
+
+volumes:
+  peliculas_data:
