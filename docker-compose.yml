@@ -74,7 +74,36 @@ services:
     ports:
       - "8003:8000"
 
+  db-compras:
+    image: postgres:16
+    container_name: db-compras
+    restart: always
+    environment:
+      POSTGRES_DB: compras_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5436:5432"
+    volumes:
+      - compras_data:/var/lib/postgresql/data
+
+  ms-compras-boletos:
+    build:
+      context: ./ms-compras-boletos
+    container_name: ms-compras-boletos
+    restart: always
+    depends_on:
+      - db-compras
+      - ms-reservas-asientos
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db-compras:5432/compras_db
+      RESERVAS_API_URL: http://ms-reservas-asientos:8000/api/v1
+    ports:
+      - "8004:8000"
+
 volumes:
   peliculas_data:
   funciones_data:
-  reservas_data:
+  reservas_data:
+  compras_data:
+
