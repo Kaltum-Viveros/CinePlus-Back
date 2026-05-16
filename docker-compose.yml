@@ -49,6 +49,32 @@ services:
     ports:
       - "8002:8000"
 
+  db-reservas:
+    image: postgres:16
+    container_name: db-reservas
+    restart: always
+    environment:
+      POSTGRES_DB: reservas_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5435:5432"
+    volumes:
+      - reservas_data:/var/lib/postgresql/data
+
+  ms-reservas-asientos:
+    build:
+      context: ./ms-reservas-asientos
+    container_name: ms-reservas-asientos
+    restart: always
+    depends_on:
+      - db-reservas
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db-reservas:5432/reservas_db
+    ports:
+      - "8003:8000"
+
 volumes:
   peliculas_data:
   funciones_data:
+  reservas_data:
