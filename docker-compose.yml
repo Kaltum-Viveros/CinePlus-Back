@@ -24,5 +24,31 @@ services:
     ports:
       - "8001:8000"
 
+  db-funciones:
+    image: postgres:16
+    container_name: db-funciones
+    restart: always
+    environment:
+      POSTGRES_DB: funciones_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - funciones_data:/var/lib/postgresql/data
+
+  ms-funciones:
+    build:
+      context: ./ms-funciones
+    container_name: ms-funciones
+    restart: always
+    depends_on:
+      - db-funciones
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db-funciones:5432/funciones_db
+    ports:
+      - "8002:8000"
+
 volumes:
   peliculas_data:
+  funciones_data:
