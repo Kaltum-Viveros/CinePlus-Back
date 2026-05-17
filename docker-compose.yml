@@ -101,9 +101,21 @@ services:
     ports:
       - "8004:8000"
 
+  cineplus-front:
+    build:
+      context: ../cineplus-front
+    container_name: cineplus-front
+    restart: always
+    depends_on:
+      - ms-peliculas
+      - ms-funciones
+      - ms-reservas-asientos
+      - ms-compras-boletos
+    ports:
+      - "4200:80"
+
 volumes:
   peliculas_data:
   funciones_data:
   reservas_data:
   compras_data:
-
